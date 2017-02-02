@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Main Page</title>
+
+<style>
+#h1, #h2, #h3, #h4, #h5, #h6, #h7, #h8, #h9, #h10, #h11, #h12, #h13, #h14, #h15, #h16, #h17, #h18, #h19, #h20, #h21, #h22, #h23, #h24, #h25, #h26, #h27, #h28, #h29, #h30{
+display:none;
+</style>
+<style>
+
+input[type=button], input[type=button], input[type=button], input[type=button], input[type=button] {
+    background-color:hsl(214, 72%, 40%) ;
+    border: none;
+    color: white;
+    padding: 10px 22px;
+    text-decoration: none;
+    margin: 50px 20px 60px 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 20px;
+    display:block;
+    width: 200px;
+}
+</style>
+<style type="text/css">
+body {
+  background: url(images/img21.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.result {
+font-size: 16px;
+background-color:white;
+opacity:0.7;
+  color: black;
+   width:100%;
+   height:100%;
+   padding:15px;
+   font-family: "Comic Sans MS", cursive, sans-serif;
+}
+.button {
+    background-color: hsl(214, 71%, 63%);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 2px;
+    margin-left:5px;
+    cursor: pointer;
+    position:absolute;
+    
+}
+.button4 {border-radius: 12px; background-color: hsl(214, 71%, 63%);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+top:1%;
+    margin-left:5px;
+    cursor: pointer;
+    position:fixed;}
+h2 {
+    color: black;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 25px;
+
+}
+
+
+</style>
+
+<script type="text/javascript">
+j$ = jQuery.noConflict();
+
+ 
+//console.log(s);
+
+	
+j$(document).ready(function() {
+	function getUrlParams(){
+		var pageUrl = window.location.search.substring(1);
+		var urlVars = pageUrl.split('&');
+		for (var i=0; i<urlVars.length; i++){
+			var param = urlVars[i].split("=");
+			if (param[0] == "search"){
+				return param[1];
+			}
+		}
+	}
+	
+	var s=getUrlParams();
+	console.log(s);
+	var qurl="http://54.68.99.12:8983/solr/Project4/select?fl=tweet_topic,text&q="+s+"&indent=on&wt=json&rows=30&json.wrf=?";
+	console.log(qurl);
+  	var largest_count = 0;
+  	var largest_value;
+	j$.ajax({
+    	  
+	url: qurl,
+            dataType: 'jsonp', 
+            method : 'GET',
+            
+            error: function (xhr, error) {
+                console.log('error');
+            },
+            success: function(data){
+                console.log(data.response);
+                var htmltext = "";
+                if(data.response.numFound == 0){
+                    htmltext += "<h3>No relavant tweets found!</h3>";
+                }
+                else{
+                    j$.each(data.response.docs,function(index,element){
+                        console.log("element- text   " + element.text);
+                        htmltext += "<h3>" + element.text+ "</h3>";
+                    });
+                }
+                j$("#result").html(htmltext);
+            	
+                var temp=0;
+                var count1 = 0; 
+                var count2 = 0; 
+                var count3 = 0; 
+                var count4 = 0; 
+                var count5 = 0;  
+                var arr = new Array();
+                j$.each(data.response.docs,function(index,element){
+                    temp=element.tweet_topic;
+                    if(temp==1){
+                        count1++;
+                    }
+                    if(temp==2){
+                        count2++;
+                    }
+                    if(temp==3){
+                        count3++;
+                    }
+                    if(temp==4){
+                        count4++;
+                    }
+                    if(temp==5){
+                        count5++;
+                    }
+                   // htmltext += "<h5>" + "count 1="+ count1+ "count 2="+ count2+"count 3="+ count3+"count 4="+ count4+"count 5="+ count5+"</h5>" ;
+                   // $("#result").html("<h5>" + element.text+ "</h5>");
+                    
+                });
+               // $("#result").html(htmltext);
+              
+              arr[0]=count1;
+              arr[1]=count2;
+              arr[2]=count3;
+              arr[3]=count4;
+              arr[4]=count5;
+              var i;
+			  for (i = 0; i < arr.length; ++i) {
+			      if (arr[i] > largest_count){
+			      	largest_count = arr[i];
+			      	largest_value = i+1;
+			      }
+			  }
+			 console.log(largest_count);
+			 console.log(largest_value);
+			  console.log(arr);
+            }
+    });
+
+	 j$("#getSubTopics").click(function(){
+         var key1=["Christmas","Dinner","Cake","Just","Reindeer","Plum cake"];
+         var key2=["Christmas","Tree","Eve","Lights","Decoration","Christianity"];
+         var key3=["Christmas","Tradition","Celebration","Cards","Movie","Love"];
+    	 var key4=["Christmas","Music","Santa Claus","Holiday","Carol","Gift"];
+    	 var key5=["Christmas","Jesus","White Christmas","Time","Party","Merry"];
+    	 
+    	var x = largest_value;
+    	if(x==1)
+    	{
+    		
+    		var y1= document.getElementById("h1");
+    		y1.style.display = "block";
+    		var y2= document.getElementById("h2");
+    		y2.style.display = "block";
+    		var y3= document.getElementById("h3");
+    		y3.style.display = "block";
+    		var y4= document.getElementById("h4");
+    		y4.style.display = "block";
+    		var y5= document.getElementById("h5");
+    		y5.style.display = "block";
+    		var y6= document.getElementById("h6");
+    		y6.style.display = "block";
+    		
+    		
+
+    		      var input = document.getElementById('h1');
+    		      input.value = key1[0];
+    		      //document.appendChild(input);
+    		      var input1 = document.getElementById('h2');
+    		      input1.value = key1[1];
+    		      //document.appendChild(input1);
+    		      var input2 = document.getElementById('h3');
+    		      input2.value = key1[2];
+    		      //document.appendChild(input2);
+    		      var input3 = document.getElementById('h4');
+    		      input3.value = key1[3];
+    		      //document.appendChild(input3);
+    		      var input4 = document.getElementById('h5');
+    		      input4.value = key1[4];
+    		      var input5 = document.getElementById('h6');
+    		      input5.value = key1[5];
+    		     document.appendChild(input);// or put it wherever you need to.
+
+    		    
+    		
+    	}
+    	if(x==2)
+    	{
+    		
+    		var y1= document.getElementById("h7");
+    		y1.style.display = "block";
+    		var y2= document.getElementById("h8");
+    		y2.style.display = "block";
+    		var y3= document.getElementById("h9");
+    		y3.style.display = "block";
+    		var y4= document.getElementById("h10");
+    		y4.style.display = "block";
+    		var y5= document.getElementById("h11");
+    		y5.style.display = "block";
+    		var y6= document.getElementById("h12");
+    		y6.style.display = "block";
+    		
+    		
+
+    		      
+    		      //document.appendChild(input); 
+    		      var input = document.getElementById('h7');
+    		      input.value = key2[0];
+    		      //document.appendChild(input);
+    		      var input1 = document.getElementById('h8');
+    		      input1.value = key2[1];
+    		      //document.appendChild(input);
+    		      var input2 = document.getElementById('h9');
+    		      input2.value = key2[2];
+    		      //document.appendChild(input);
+    		      var input3 = document.getElementById('h10');
+    		      input3.value = key2[3];
+    		      var input4 = document.getElementById('h11');
+    		      input4.value = key2[4];
+    		      var input5 = document.getElementById('h12');
+    		      input5.value = key2[5];
+    		     document.appendChild(input);// or put it wherever you need to.
+
+    		    
+    		
+    	}
+    	if(x==3)
+    	{
+    		
+    		var y1= document.getElementById("h13");
+    		y1.style.display = "block";
+    		var y2= document.getElementById("h14");
+    		y2.style.display = "block";
+    		var y3= document.getElementById("h15");
+    		y3.style.display = "block";
+    		var y4= document.getElementById("h16");
+    		y4.style.display = "block";
+    		var y5= document.getElementById("h17");
+    		y5.style.display = "block";
+    		var y6= document.getElementById("h18");
+    		y6.style.display = "block";
+    		
+    		
+
+    		      var input = document.getElementById('h13');
+    		      input.value = key3[0];
+    		      //document.appendChild(input);
+    		      var input1 = document.getElementById('h14');
+    		      input1.value = key3[1];
+    		      //document.appendChild(input1);
+    		      var input2 = document.getElementById('h15');
+    		      input2.value = key3[2];
+    		      //document.appendChild(input2);
+    		      var input3 = document.getElementById('h16');
+    		      input3.value = key3[3];
+    		      //document.appendChild(input3);
+    		      var input4 = document.getElementById('h17');
+    		      input4.value = key3[4];
+    		      var input5 = document.getElementById('h18');
+    		      input5.value = key3[5];
+    		      document.appendChild(input);
+    		     
+
+    		    
+    		
+    	}if(x==4)
+    	{
+    		
+    		var y1= document.getElementById("h19");
+    		y1.style.display = "block";
+    		var y2= document.getElementById("h20");
+    		y2.style.display = "block";
+    		var y3= document.getElementById("h21");
+    		y3.style.display = "block";
+    		var y4= document.getElementById("h22");
+    		y4.style.display = "block";
+    		var y5= document.getElementById("h23");
+    		y5.style.display = "block";
+    		var y6= document.getElementById("h24");
+    		y6.style.display = "block";
+    		
+    		
+
+    		      var input = document.getElementById('h19');
+    		      input.value = key4[0];
+    		      //document.appendChild(input);
+    		      var input1 = document.getElementById('h20');
+    		      input1.value = key4[1];
+    		      //document.appendChild(input1);
+    		      var input2 = document.getElementById('h21');
+    		      input2.value = key4[2];
+    		      //document.appendChild(input2);
+    		      var input3 = document.getElementById('h22');
+    		      input3.value = key4[3];
+    		      //document.appendChild(input3);
+    		      var input4 = document.getElementById('h23');
+    		      input4.value = key4[4];
+    		      var input5 = document.getElementById('h24');
+    		      input5.value = key4[5];
+    		     document.appendChild(input);// or put it wherever you need to.
+
+    		    
+    		
+    	}if(x==5)
+    	{
+    		
+    		var y1= document.getElementById("h25");
+    		y1.style.display = "block";
+    		var y2= document.getElementById("h26");
+    		y2.style.display = "block";
+    		var y3= document.getElementById("h27");
+    		y3.style.display = "block";
+    		var y4= document.getElementById("h28");
+    		y4.style.display = "block";
+    		var y5= document.getElementById("h29");
+    		y5.style.display = "block";
+    		var y6= document.getElementById("h30");
+    		y6.style.display = "block";
+    		
+    		
+
+    		      var input = document.getElementById('h25');
+    		      input.value = key5[0];
+    		      //document.appendChild(input);
+    		      var input1 = document.getElementById('h26');
+    		      input1.value = key5[1];
+    		      //document.appendChild(input1);
+    		      var input2 = document.getElementById('h27');
+    		      input2.value = key5[2];
+    		      //document.appendChild(input2);
+    		      var input3 = document.getElementById('h28');
+    		      input3.value = key5[3];
+    		      //document.appendChild(input3);
+    		      var input4 = document.getElementById('h29');
+    		      input4.value = key5[4];
+    		      var input5 = document.getElementById('h30');
+    		      input5.value = key5[5];
+    		      document.appendChild(input);// or put it wherever you need to.
+    	}         
+
+});
+
+}); 
+    
+</script>
+
+
+</head>
+<body>
+    <div style="top:1cm;left:0cm;width:100%;height:auto;position:absolute;">
+        <!-- <div style="top:0%;left:33%;width:30%;height:35%;position:absolute">
+            
+        </div> -->
+        <form action="index.html">
+            <button class="button4">BACK</button>
+        </form>
+        <div id="buttons" style="width:25%; float:left;">
+            <button id="getSubTopics" style="top:30%; font-size: 24px;border-radius: 12px;background-color: hsl(214, 71%, 63%);border: none;color: white;padding: 10px 22px;text-decoration: none;margin: 60px 50px 60px 60px;cursor: pointer;">View Subtopics</button>
+            <input type='button' name="subtopic" id=h1 onclick="window.location.href='  page3.html?subtopic=Christmas'">
+            <input type='button' name="subtopic" id=h2 onclick="window.location.href='page3.html?subtopic=Christmas dinner'">
+            <input type='button' name="subtopic" id=h3 onclick="window.location.href='page3.html?subtopic=Cake'">
+            <input type='button' name="subtopic" id=h4 onclick="window.location.href='page3.html?subtopic=Just!'">
+            <input type='button' name="subtopic" id=h5 onclick="window.location.href='page3.html??subtopic=Reindeer'">
+            <input type='button' name="subtopic" id=h6 onclick="window.location.href='page3.html??subtopic=Plum cake'">
+            <input type='button' name="subtopic" id=h7 onclick="window.location.href='page3.html?subtopic=Christmas'">
+            <input type='button' name="subtopic" id=h8 onclick="window.location.href='page3.html?subtopic=Christmas tree'">
+            <input type='button' name="subtopic" id=h9 onclick="window.location.href='page3.html?subtopic=Christmas Eve'">
+            <input type='button' name="subtopic" id=h10 onclick="window.location.href='page3.html?subtopic=christmas lights'">
+            <input type='button' name="subtopic" id=h11 onclick="window.location.href='page3.html?subtopic=christmas decoration'">
+            <input type='button' name="subtopic" id=h12 onclick="window.location.href='page3.html?subtopic=christianity'">
+            <input type='button' name="subtopic" id=h13 onclick="window.location.href='page3.html?subtopic=christmas'">
+            <input type='button' name="subtopic" id=h14 onclick="window.location.href='page3.html?subtopic=christmas traditions'">
+            <input type='button' name="subtopic" id=h15 onclick="window.location.href='page3.html?subtopic=christmas Celebration'">
+            <input type='button' name="subtopic" id=h16 onclick="window.location.href='page3.html?subtopic=christmas card'">
+            <input type='button' name="subtopic" id=h17 onclick="window.location.href='page3.html?subtopic=christmas_by_medium#Films'">
+            <input type='button' name="subtopic" id=h18 onclick="window.location.href='page3.html?subtopic=love'">
+            <input type='button' name="subtopic" id=h19 onclick="window.location.href='page3.html?subtopic=christmas'">
+            <input type='button' name="subtopic" id=h20 onclick="window.location.href='page3.html?subtopic=music'">
+            <input type='button' name="subtopic" id=h21 onclick="window.location.href='page3.html?subtopic=Santa Claus'">
+            <input type='button' name="subtopic" id=h22 onclick="window.location.href='page3.html?subtopic=christmas and holiday season'">
+            <input type='button' name="subtopic" id=h23 onclick="window.location.href='page3.html?subtopic=christmas carol'">
+            <input type='button' name="subtopic" id=h24 onclick="window.location.href='page3.html?subtopic=Christmas_gift_(exclamation)'">
+            <input type='button' name="subtopic" id=h25 onclick="window.location.href='page3.html?subtopic=christmas'">
+            <input type='button' name="subtopic" id=h26 onclick="window.location.href='page3.html?subtopic=jesus'">
+            <input type='button' name="subtopic" id=h27 onclick="window.location.href='page3.html?subtopic=White Christmas'">
+            <input type='button' name="subtopic" id=h28 onclick="window.location.href='page3.html?subtopic=Christmas_Time_(Boney_M._album)'">
+            <input type='button' name="subtopic" id=h29 onclick="window.location.href='page3.html?subtopic=Xmas_Party_Album'">
+            <input type='button' name="subtopic" id=h30 onclick="window.location.href='page3.html?subtopic=Happiness'">
+        </div>
+        <div id="summary" style="width:60%;height:auto;position:relative; display: block; margin:0 auto;">
+        <img src="images/logofinal.png" style="width: 400px;height:200px; display: block; margin:0 auto;" /> 
+            <h2 style="text-align: center;">Relevant Tweet Feed</h2>
+            <div class="result" id="result" style="width:75%; height: 450px; position:relative; overflow-y: auto; display: block; margin:0 auto;">
+        </div>
+        </div>
+        
+        <div class="footer" style="margin-top:20px;">
+            <h3 style="text-align: center;"><b>@This is a copyright of Technocrats.</b> </h3>
+        </div>
+    </div>
+</body>
+</html>
